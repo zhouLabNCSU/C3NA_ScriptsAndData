@@ -19,6 +19,16 @@ The module patterns, silhouette, consensus and correlation plots are generated u
 
 ### 1.1 Download Pre-Compiled Data from GitHub
 ```{r}
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_DADA2_Cancer.rds")
+baxterDADA2Cancer <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_deNovo_Cancer.rds")
+baxterDeNovoCancer <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_DADA2_Normal.rds")
+baxterDADA2Normal <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_deNovo_Normal.rds")
+baxterDeNovoNormal <- readRDS(url(githubURL, method="libcurl"))
+
+
 
 ```
 
