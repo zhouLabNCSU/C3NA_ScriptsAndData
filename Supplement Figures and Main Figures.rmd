@@ -139,7 +139,211 @@ geversDADA2CDVsno <- readRDS(url(githubURL, method="libcurl"))
 C3NA::compareTwoPhenoShiny(geversDADA2CDVsno)
 ```
 
+### 2.3 Main Figure 2E
+```{r}
+load("./SupplementaryPlotData/diseaseRefData.rdata")
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_DADA2_CancerVsNormal.rds")
+baxterDADA2CancerVsNormal <- readRDS(url(githubURL, method="libcurl"))
+cancerTaxaTaxa = baxterDADA2CancerVsNormal$sparccP_Filtered_Combined %>%
+  filter((cor_Disease >= 0.2 & Module_Disease == "Intra-Modular") &
+           (cor_Control< 0.2 & Module_Control == "Inter-Modular") &
+  # filter((cor_Disease >= 0.2) &
+           (source %in% CancerTaxa | target %in% CancerTaxa)) %>%
+  filter(substring(source, 1, 1) %in% c("p", "g", "s") & substring(target, 1, 1) %in% c("p", "g", "s"))
+nodesCancer = baxterDADA2CancerVsNormal$nodes$nodesAll %>%
+  filter(TaxaName %in% unlist(unique(cancerTaxaTaxa[, c("source", "target")])))
+nodesCancer = merge(nodesCancer, baxterDADA2CancerVsNormal$DA, by = "TaxaName", all.x = TRUE)
+nodesCancer = merge(nodesCancer, baxterDADA2CancerVsNormal$C3NA_Wilcoxon[, c("TaxaName", "C3NA")], 
+                    all.x = TRUE)
+nodesCancer = merge(nodesCancer, cancerCat[, c("matchedTaxa", "CRC Category")], 
+                    by.x = "TaxaName", by.y = "matchedTaxa", all.x = TRUE)
+nodesCancer = nodesCancer %>% arrange(ClusterID_Disease) %>%
+  replace(is.na(.), value = "")
+mygraph = graph_from_data_frame(cancerTaxaTaxa[, c("source", "target", "cor_Disease")])
+graphOrder = data.frame(
+  TaxaName = as.character(V(mygraph)$name),
+  igraphID = as.character(V(mygraph))
+)
+nodesPos = merge(cancerTaxaTaxa, graphOrder, by.x = "source", by.y = "TaxaName", all.x = TRUE)
+colnames(nodesPos)[which(colnames(nodesPos) == "igraphID")] = "sourceID"
+nodesPos = merge(nodesPos, graphOrder, by.x = "target", by.y = "TaxaName", all.x = TRUE)
+colnames(nodesPos)[which(colnames(nodesPos) == "igraphID")] = "targetID"
+nodesPos = nodesPos %>%
+  filter(source %in% nodesCancer$TaxaName & target %in% nodesCancer$TaxaName)
+graphNodes = merge(nodesCancer, graphOrder, by = "TaxaName", all.x = TRUE, sort = FALSE)
+graphNodes = graphNodes %>% arrange(ClusterID_Disease)
+graphNodes$TaxaName = as.character(graphNodes$TaxaName)
+graphNodes$TaxaName = factor(graphNodes$TaxaName, levels = graphNodes$TaxaName)
+graphNodes$newID = seq(nrow(graphNodes))
+mygraph = graph_from_data_frame(nodesPos[, c("source", "target", "cor_Disease")],
+                                vertices = graphNodes[, c("TaxaName", "newID", "colors_Disease")])
+arcPlot = 
+  ggraph(mygraph, 
+         layout="linear", 
+         circular = FALSE) + 
+  geom_edge_arc(aes(label = round(cor_Disease, digits = 2), hjust = -0.1), color = "#ababab") + 
+  geom_node_point(aes(color = colors_Disease), size=8) +
+  scale_x_discrete(limits = nodesCancer$TaxaName,
+                   labels = nodesCancer$TaxaName) +
+  theme_bw() + labs(x = NULL, y = "", title = "Disease-Only Intra-Modular Correlations") + ylim(0, 5) + 
+  theme(
+    legend.position="none",
+    # plot.margin=unit(rep(2,4), "cm")
+    plot.title = element_text(hjust = 0.5, size=12, face = "bold"),
+    axis.text.x = element_text(color = "white"),
+    axis.text.y = element_text(size = 12, face = "bold.italic")
+  ) + coord_flip()
+curTable = graphNodes %>% map_df(rev) %>%
+  dplyr::select(-igraphID, -newID)
+curTable[curTable == "FALSE"] = NA
+curTable[curTable == ""] = NA
+curTable = as.data.frame(curTable)
+curTable$TaxaName = factor(curTable$TaxaName, levels = rev(curTable$TaxaName))
+tab_base <- ggplot(curTable, aes(y=TaxaName)) +
+    ylab(NULL) + xlab("  ") +
+    theme(plot.title = element_text(hjust = 0.5, size=12, face = "bold"), 
+        axis.text.x=element_text(color="white"), 
+        # axis.line=element_blank(),
+        axis.text.y=element_blank(),axis.ticks=element_blank(),
+        axis.title.y=element_blank(),legend.position="none",
+        panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),plot.background=element_blank())
+tab1 <- tab_base +
+    geom_label(aes(x=1, label = ClusterID_Disease, color = colors_Disease), fontface = "bold") +
+    ggtitle("Cancer")
+tab2 <- tab_base +
+    geom_label(aes(x=1, label = ClusterID_Control, color = colors_Control), fontface = "bold") +
+    ggtitle("Healthy")
 
+tab3 <- tab_base +
+    geom_label(aes(x=1, label = ANCOMBC), fill = "#1A77D6", color = "white", fontface = "bold") +
+    # geom_label(fill = "red") + 
+    ggtitle("ANCOMBC")
+tab4 <- tab_base +
+    geom_label(aes(x=1, label = ALDEx2,), fill = "#1A77D6", color = "white", fontface = "bold") +
+    ggtitle("ALDEx2")
+tab5 <- tab_base +
+    geom_label(aes(x=1, label = MaAsLin2), fill = "#1A77D6", color = "white", fontface = "bold") +
+    ggtitle("MaAsLin2")
+tab6 <- tab_base +
+    geom_label(aes(x=1, label = C3NA), fill = "#1A77D6", color = "white", fontface = "bold") +
+    ggtitle("C3NA")
+tab7 <- tab_base +
+    geom_label(aes(x=1, label = `CRC Category`), fontface = "bold") +
+    ggtitle("Known Functions")
+
+# Figure <- grid.arrange(tab1, tab2, tab3, tab4, tab5, tab6, arcPlot,
+#              layout_matrix = matrix(c(rep(1,10),2,2,2), nrow=1))
+g <- arrangeGrob(tab1, tab2, tab3, tab4, tab5, tab6, tab7,
+                 arcPlot,
+                 layout_matrix = matrix(c(1,1,1,2,2,2,3,3,4,4,5,5,6,6,7,7,7,
+                                          rep(8,20)), nrow=1))
+ggsave(file="./renderedPlots/Main_Figure_2E.png", 
+       g, width = 15, height = 15, unit = "in", dpi = 300)
+```
+
+### 2.3 Main Figure 2F
+```{r}
+load("./SupplementaryPlotData/diseaseRefData.rdata")
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/IBDMDB_DADA2_CDVsnonIBD.rds")
+IBDMDBDADA2CDVsno <- readRDS(url(githubURL, method="libcurl"))
+cancerTaxaTaxa = IBDMDBDADA2CDVsno$sparccP_Filtered_Combined %>%
+  filter((cor_Disease >= 0.2 & Module_Disease == "Intra-Modular") &
+           (cor_Control< 0.2 & Module_Control == "Inter-Modular") &
+  # filter((cor_Disease >= 0.2) &
+           (source %in% CancerTaxa | target %in% CancerTaxa)) %>%
+  filter(substring(source, 1, 1) %in% c("p", "g", "s") & substring(target, 1, 1) %in% c("p", "g", "s"))
+nodesCancer = IBDMDBDADA2CDVsno$nodes$nodesAll %>%
+  filter(TaxaName %in% unlist(unique(cancerTaxaTaxa[, c("source", "target")])))
+nodesCancer = merge(nodesCancer, IBDMDBDADA2CDVsno$DA, by = "TaxaName", all.x = TRUE)
+nodesCancer = merge(nodesCancer, IBDMDBDADA2CDVsno$C3NA_Wilcoxon[, c("TaxaName", "C3NA")], 
+                    all.x = TRUE)
+nodesCancer = merge(nodesCancer, IBDCat[, c("matchedTaxa", "IBD Category")], 
+                    by.x = "TaxaName", by.y = "matchedTaxa", all.x = TRUE)
+nodesCancer = nodesCancer %>% arrange(ClusterID_Disease) %>%
+  replace(is.na(.), value = "")
+mygraph = graph_from_data_frame(cancerTaxaTaxa[, c("source", "target", "cor_Disease")])
+graphOrder = data.frame(
+  TaxaName = as.character(V(mygraph)$name),
+  igraphID = as.character(V(mygraph))
+)
+nodesPos = merge(cancerTaxaTaxa, graphOrder, by.x = "source", by.y = "TaxaName", all.x = TRUE)
+colnames(nodesPos)[which(colnames(nodesPos) == "igraphID")] = "sourceID"
+nodesPos = merge(nodesPos, graphOrder, by.x = "target", by.y = "TaxaName", all.x = TRUE)
+colnames(nodesPos)[which(colnames(nodesPos) == "igraphID")] = "targetID"
+nodesPos = nodesPos %>%
+  filter(source %in% nodesCancer$TaxaName & target %in% nodesCancer$TaxaName)
+graphNodes = merge(nodesCancer, graphOrder, by = "TaxaName", all.x = TRUE, sort = FALSE)
+graphNodes = graphNodes %>% arrange(ClusterID_Disease)
+graphNodes$TaxaName = as.character(graphNodes$TaxaName)
+graphNodes$TaxaName = factor(graphNodes$TaxaName, levels = graphNodes$TaxaName)
+graphNodes$newID = seq(nrow(graphNodes))
+mygraph = graph_from_data_frame(nodesPos[, c("source", "target", "cor_Disease")],
+                                vertices = graphNodes[, c("TaxaName", "newID", "colors_Disease")])
+arcPlot = 
+  ggraph(mygraph, 
+         layout="linear", 
+         circular = FALSE) + 
+  geom_edge_arc(aes(label = round(cor_Disease, digits = 2), hjust = -0.1), color = "#ababab") + 
+  geom_node_point(aes(color = colors_Disease), size=8) +
+  scale_x_discrete(limits = nodesCancer$TaxaName,
+                   labels = nodesCancer$TaxaName) +
+  theme_bw() + labs(x = NULL, y = "", title = "Disease-Only Intra-Modular Correlations") + ylim(0, 5) + 
+  theme(
+    legend.position="none",
+    # plot.margin=unit(rep(2,4), "cm")
+    plot.title = element_text(hjust = 0.5, size=12, face = "bold"),
+    axis.text.x = element_text(color = "white"),
+    axis.text.y = element_text(size = 12, face = "bold.italic")
+  ) + coord_flip()
+curTable = graphNodes %>% map_df(rev) %>%
+  dplyr::select(-igraphID, -newID)
+curTable[curTable == "FALSE"] = NA
+curTable[curTable == ""] = NA
+curTable = as.data.frame(curTable)
+curTable$TaxaName = factor(curTable$TaxaName, levels = rev(curTable$TaxaName))
+tab_base <- ggplot(curTable, aes(y=TaxaName)) +
+    ylab(NULL) + xlab("  ") +
+    theme(plot.title = element_text(hjust = 0.5, size=12, face = "bold"), 
+        axis.text.x=element_text(color="white"), 
+        # axis.line=element_blank(),
+        axis.text.y=element_blank(),axis.ticks=element_blank(),
+        axis.title.y=element_blank(),legend.position="none",
+        panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),plot.background=element_blank())
+tab1 <- tab_base +
+    geom_label(aes(x=1, label = ClusterID_Disease, color = colors_Disease), fontface = "bold") +
+    ggtitle("CD")
+tab2 <- tab_base +
+    geom_label(aes(x=1, label = ClusterID_Control, color = colors_Control), fontface = "bold") +
+    ggtitle("Healthy")
+
+tab3 <- tab_base +
+    geom_label(aes(x=1, label = ANCOMBC), fill = "#1A77D6", color = "white", fontface = "bold") +
+    # geom_label(fill = "red") + 
+    ggtitle("ANCOMBC")
+tab4 <- tab_base +
+    geom_label(aes(x=1, label = ALDEx2,), fill = "#1A77D6", color = "white", fontface = "bold") +
+    ggtitle("ALDEx2")
+tab5 <- tab_base +
+    geom_label(aes(x=1, label = MaAsLin2), fill = "#1A77D6", color = "white", fontface = "bold") +
+    ggtitle("MaAsLin2")
+tab6 <- tab_base +
+    geom_label(aes(x=1, label = C3NA), fill = "#1A77D6", color = "white", fontface = "bold") +
+    ggtitle("C3NA")
+tab7 <- tab_base +
+    geom_label(aes(x=1, label = `IBD Category`), fontface = "bold") +
+    ggtitle("Known Functions")
+
+# Figure <- grid.arrange(tab1, tab2, tab3, tab4, tab5, tab6, arcPlot,
+#              layout_matrix = matrix(c(rep(1,10),2,2,2), nrow=1))
+g <- arrangeGrob(tab1, tab2, tab3, tab4, tab5, tab6, tab7,
+                 arcPlot,
+                 layout_matrix = matrix(c(1,1,1,2,2,2,3,3,4,4,5,5,6,6,7,7,7,
+                                          rep(8,20)), nrow=1))
+ggsave(file="./renderedPlots/Main_Figure_2F.png", 
+       g, width = 15, height = 15, unit = "in", dpi = 300)
+```
 
 
 

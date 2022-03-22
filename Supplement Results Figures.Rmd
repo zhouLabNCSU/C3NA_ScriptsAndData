@@ -10,8 +10,110 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ComplexUpset)
+library(gridExtra)
+library(gridBase)
+library(grid)
 ```
 
+### Supplement Result Figure 1. 
+```{r}
+SparCC_StabilitySummary_fdr_Cancer_Results_V2 = readRDS(paste0("./SupplementaryPlotData/SRF_1.rds"))
+colorKey = data.frame(
+  TaxaLvl = c("Phylum", "Class", "Order", "Family", "Genus", "Species"),
+  color = c("#FFD919", "#0B701E", "#FF7300", "#120C94", "#FF748C", "#009BB3")
+)
+grid_arrange_shared_legend <- function(...) {
+    plots <- list(...)
+    g <- ggplotGrob(plots[[1]] + theme(legend.position="bottom"))$grobs
+    legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+    lheight <- sum(legend$height)
+    grid.arrange(
+        do.call(arrangeGrob, lapply(plots, function(x)
+            x + theme(legend.position="none"))),
+        legend,
+        ncol = 1,
+        heights = unit.c(unit(1, "npc") - lheight, lheight))
+}
+sharedPlot = 
+  ggplot(SparCC_StabilitySummary_fdr_Cancer_Results_V2 %>% 
+           filter(Category == "Present in Both Version" & nBoot == 1000), 
+         aes(x = nBoot, y = CorRelDiff)) + 
+    # geom_violin() +
+    geom_hline(yintercept = 0) + 
+    ggdist::stat_halfeye(
+      aes(fill = TaxaLvl), alpha = 0.8,
+      adjust = 0.5, width = 0.6,
+      .width = 0, justification = -0.2
+      # point_colour = NA
+    ) + 
+    geom_boxplot(
+      aes(fill = TaxaLvl), alpha = 0.8,
+      width = 0.15,
+      outlier.shape = NA
+    ) + 
+    gghalves::geom_half_point(
+      aes(color = TaxaLvl),
+      ## draw jitter on the left
+      side = "l", 
+      ## control range of jitter
+      range_scale = .4, 
+      ## add some transparency
+      alpha = .4
+    ) + 
+    facet_grid(TaxaLvl ~ Category) + 
+    theme_bw() + 
+    scale_color_manual(values = colorKey$color, 
+                       breaks = colorKey$TaxaLvl) + 
+      scale_fill_manual(values = colorKey$color, 
+                       breaks = colorKey$TaxaLvl) + 
+    labs(x = "Number of Bootstrap", 
+         y = "Correlation Difference between Stacked-Taxa and Individual Taxonomic Levels", 
+         color = "Taxonomic \n  Levels", fill = "Taxonomic \n  Levels", 
+         title = "A") + theme(legend.position="bottom")
+
+individualPlot = 
+ggplot(SparCC_StabilitySummary_fdr_Cancer_Results_V2 %>% 
+         filter(Category != "Present in Both Version" & nBoot == 1000), 
+       aes(x = nBoot, y = MissingCor)) + 
+  # geom_violin() +"A
+  # facet_grid(TaxaLvl ~ Category)
+  geom_hline(yintercept = 0.2) + 
+  ggdist::stat_halfeye(
+    aes(fill = TaxaLvl), alpha = 0.8,
+    adjust = 0.5, width = 0.6,
+    .width = 0, justification = -0.2
+    # point_colour = NA
+  ) + 
+  geom_boxplot(
+    aes(fill = TaxaLvl), alpha = 0.8,
+    width = 0.15,
+    outlier.shape = NA
+  ) + 
+  gghalves::geom_half_point(
+    aes(color = TaxaLvl),
+    ## draw jitter on the left
+    side = "l", 
+    ## control range of jitter
+    range_scale = .4, 
+    ## add some transparency
+    alpha = .4
+  ) + 
+  facet_grid(TaxaLvl ~ Category) + 
+  theme_bw() + 
+    scale_color_manual(values = colorKey$color, 
+                       breaks = colorKey$TaxaLvl) + 
+      scale_fill_manual(values = colorKey$color, 
+                       breaks = colorKey$TaxaLvl) + 
+  labs(x = "Number of Bootstrap", 
+       y = "Correlation", 
+       color = "Taxonomic \n  Levels", fill = "Taxonomic \n  Levels",
+       title = "B")
+combinePlot = grid_arrange_shared_legend(sharedPlot, individualPlot, nrow = 1, ncol = 2)
+ggsave(file = paste0("./renderedPlots/SR_Figure_1.png"),
+       plot = combinePlot,
+       height = 12, width = 8,
+       units = "in", dpi = "retina")
+```
 
 ### Supplement Result Figure 2. Comparison of DA and C3NA on Significant Taxa
 ```{r, fig.width=10}
@@ -376,7 +478,27 @@ ggsave(file = paste0("./renderedPlots/SR_Figure_9B.png"),
 
 ### Supplement Result Figure 10
 ```{r}
-
+filterdData_TF = readRDS(paste0("./SupplementaryPlotData/SRF_10.rds"))
+selectedCol = colnames(filterdData_TF)[2:(ncol(filterdData_TF)-1)]
+curPlot = upset(
+    data = filterdData_TF,
+    intersect = c(selectedCol
+                  ), 
+    annotations = list(
+       'Intra-Modular\nTaxa-Taxa\nCorrelation' = 
+          ggplot(mapping=aes(y=MeanCor))
+            + geom_violin(alpha = 0.5, na.rm=TRUE)
+            + ggbeeswarm::geom_quasirandom(aes(color="blue"), na.rm=TRUE, alpha = 0.2)
+            + geom_boxplot(width = 0.1, na.rm=TRUE) + guides(color = FALSE)
+    ),
+    # min_size = 10, 
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE, height_ratio = 1.5,
+    queries=list(upset_query(set="#Cluster: 15 | Min #Taxa per Module: 21", fill='blue'))
+)
+ggsave(file = paste0("./renderedPlots/SR_Figure_10.png"),
+       plot = curPlot,
+       height = 15, width = 14,
+       units = "in", dpi = "retina")
 ```
 
 
