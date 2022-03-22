@@ -1,0 +1,56 @@
+---
+title: "Supplement Figures "
+author: "Kuncheng Song"
+date: "2/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 0. Library
+```{r, include=FALSE}
+library(C3NA)
+```
+
+## 1. Supplementary Figures and Main Figure 1 Workflow Figures
+The module patterns, silhouette, consensus and correlation plots are generated using the shiny application with the C3NA::moduleEvals()
+
+### 1.1 Download Pre-Compiled Data from GitHub
+```{r}
+
+```
+
+### 1.2 Call shiny application and extract plots. 
+The patterns and silhouette plots were extracted and combined together later to form the supplementary figure version to same spaces. 
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
