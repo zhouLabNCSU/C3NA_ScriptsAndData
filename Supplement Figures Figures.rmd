@@ -82,10 +82,11 @@ moduleEvals(C3NAObj = IBDMDBDeNovononIBD)
 
 ## 2. Main Figure 2 Plots
 ### 2.1 Main Figure 2A
+Duplicated legend is removed mnually and the x axis label were manually adjust to top of the plot. 
 ```{r}
-githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainFA.rdata")
-baxterDADA2Cancer <- load(url(githubURL, method="libcurl"))
-png(filename = paste0("../MainFig2A.png"),
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainF1A.rdata")
+load(url(githubURL, method="libcurl"))
+png(filename = paste0("./renderedPlots/MainFig2A.png"),
     width = 13, height = 11, res = 300, units = "in")
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(mat = as.matrix(consensusResult_Wide_C2_Combo), 
@@ -101,19 +102,25 @@ grid.text("Baxter et al. with DADA2 ASVs Assignment Method", x=-0.02, rot=90, gp
 dev.off()
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 2.1 Main Figure 2B
+```{r}
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainF1B.rdata")
+load(url(githubURL, method="libcurl"))
+png(filename = paste0("./renderedPlots/MainFig2B.png"),
+    width = 13, height = 11, res = 300, units = "in")
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(mat = as.matrix(consensusResult_Wide_C2_Combo), 
+         display_numbers = as.matrix(consensusResult_Wide_C2_CorTable),
+         cluster_rows = F, cluster_cols = F, 
+         annotation_row = cancerCat_colData_left,
+         annotation_col = cancerCat_colData_top,
+         annotation_colors = colors
+         )
+setHook("grid.newpage", NULL, "replace")
+grid.text("Gevers et al. with de novo OTUs Assignment Method", y=-0.02, gp=gpar(fontsize=12))
+grid.text("Gevers et al. with DADA2 ASVs Assignment Method", x=-0.02, rot=90, gp=gpar(fontsize=12))
+dev.off()
+```
 
 
 
