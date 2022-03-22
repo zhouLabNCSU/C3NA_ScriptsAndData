@@ -15,7 +15,7 @@ library(C3NA)
 ```
 
 ## 1. Supplementary Figures and Main Figure 1 Workflow Figures
-The module patterns, silhouette, consensus and correlation plots are generated using the shiny application with the C3NA::moduleEvals()
+The module patterns, silhouette, consensus and correlation plots are generated using the shiny application with the C3NA::moduleEvals(). Minor edits on the figures were done to adjust the titles. 
 
 ### 1.1 Download Pre-Compiled Data from GitHub
 ```{r}
@@ -28,20 +28,78 @@ baxterDADA2Normal <- readRDS(url(githubURL, method="libcurl"))
 githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_deNovo_Normal.rds")
 baxterDeNovoNormal <- readRDS(url(githubURL, method="libcurl"))
 
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Zeller_DADA2_Cancer.rds")
+zellerDADA2Cancer <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Zeller_deNovo_Cancer.rds")
+zellerDeNovoCancer <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Zeller_DADA2_Normal.rds")
+zellerDADA2Normal <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Zeller_deNovo_Normal.rds")
+zellerDeNovoNormal <- readRDS(url(githubURL, method="libcurl"))
 
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Gevers_DADA2_CD.rds")
+geversDADA2CD <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Gevers_deNovo_CD.rds")
+geversDeNovoCD <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Gevers_DADA2_no.rds")
+geversDADA2no <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Gevers_deNovo_no.rds")
+geversDeNovono <- readRDS(url(githubURL, method="libcurl"))
 
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/IBDMDB_DADA2_CD.rds")
+IBDMDBDADA2CD <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/IBDMDB_deNovo_CD.rds")
+IBDMDBDeNovoCD <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/IBDMDB_DADA2_nonIBD.rds")
+IBDMDBDADA2nonIBD <- readRDS(url(githubURL, method="libcurl"))
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/IBDMDB_deNovo_nonIBD.rds")
+IBDMDBDeNovononIBD <- readRDS(url(githubURL, method="libcurl"))
 ```
 
 ### 1.2 Call shiny application and extract plots. 
-The patterns and silhouette plots were extracted and combined together later to form the supplementary figure version to same spaces. 
-```{r}
+The patterns and silhouette plots were extracted and combined together later to form the supplementary figure version to same spaces.
+```{r, eval = FALSE}
+moduleEvals(C3NAObj = baxterDADA2Cancer)
+moduleEvals(C3NAObj = baxterDeNovoCancer)
+moduleEvals(C3NAObj = baxterDADA2Normal)
+moduleEvals(C3NAObj = baxterDeNovoNormal)
 
+moduleEvals(C3NAObj = zellerDADA2Cancer)
+moduleEvals(C3NAObj = zellerDeNovoCancer)
+moduleEvals(C3NAObj = zellerDADA2Normal)
+moduleEvals(C3NAObj = zellerDeNovoNormal)
+
+moduleEvals(C3NAObj = geversDADA2CD)
+moduleEvals(C3NAObj = geversDeNovoCD)
+moduleEvals(C3NAObj = geversDADA2no)
+moduleEvals(C3NAObj = geversDeNovono)
+
+moduleEvals(C3NAObj = IBDMDBDADA2CD)
+moduleEvals(C3NAObj = IBDMDBDeNovoCD)
+moduleEvals(C3NAObj = IBDMDBDADA2nonIBD)
+moduleEvals(C3NAObj = IBDMDBDeNovononIBD)
 ```
 
-
-
-
-
+## 2. Main Figure 2 Plots
+### 2.1 Main Figure 2A
+```{r}
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainFA.rdata")
+baxterDADA2Cancer <- load(url(githubURL, method="libcurl"))
+png(filename = paste0("../MainFig2A.png"),
+    width = 13, height = 11, res = 300, units = "in")
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(mat = as.matrix(consensusResult_Wide_C2_Combo), 
+         display_numbers = as.matrix(consensusResult_Wide_C2_CorTable),
+         cluster_rows = F, cluster_cols = F, 
+         annotation_row = cancerCat_colData_left,
+         annotation_col = cancerCat_colData_top,
+         annotation_colors = colors
+         )
+setHook("grid.newpage", NULL, "replace")
+grid.text("Baxter et al. with de novo OTUs Assignment Method", y=-0.02, gp=gpar(fontsize=12))
+grid.text("Baxter et al. with DADA2 ASVs Assignment Method", x=-0.02, rot=90, gp=gpar(fontsize=12))
+dev.off()
+```
 
 
 
