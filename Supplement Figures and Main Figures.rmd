@@ -124,16 +124,21 @@ dev.off()
 ```
 
 ### 2.3 Main Figure 2C
-The plot loads the following Baxter et al. and select g_Bacteroides in the 'Taxa Selector'. For better visualization, the edge label is adjusted to 1 and the node label was adjusted to 12. 
-```{r}
-
+The plot was generated using the C3NA::compareTwoPhenoShiny(). The plot loads the following Baxter et al. and select g_Bacteroides in the 'Taxa Selector'. For better visualization, the edge label is adjusted to 1 and the node label was adjusted to 12 and the display mode is adjusted to 'All taxa directly related to selected taxa'. 
+```{r, eval = FALSE}
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Baxter_DADA2_CancerVsNormal.rds")
+baxterDADA2CancerVsNormal <- readRDS(url(githubURL, method="libcurl"))
+C3NA::compareTwoPhenoShiny(baxterDADA2CancerVsNormal)
 ```
 
 ### 2.4 Main Figure 2D
-The plot loads the following Baxter et al. and select g_Bacteroides in the 'Taxa Selector'. For better visualization, the edge label is adjusted to 1 and the node label was adjusted to 12. 
-```{r}
-
+The plot was generated using the C3NA::compareTwoPhenoShiny(). The plot loads the following Baxter et al. and select g_Bacteroides in the 'Taxa Selector'.  For better visualization, the edge label is adjusted to 1 and the node label was adjusted to 12 and the display mode is adjusted to 'All taxa directly related to selected taxa'. 
+```{r, eval = FALSE}
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/moduleEvalsData/Gevers_DADA2_CDVsno.rds")
+geversDADA2CDVsno <- readRDS(url(githubURL, method="libcurl"))
+C3NA::compareTwoPhenoShiny(geversDADA2CDVsno)
 ```
+
 
 
 

@@ -1,0 +1,382 @@
+---
+title: "SupplementResultPlots"
+author: "Kuncheng Song"
+date: "2/15/2022"
+output: html_document
+---
+
+## !!! CHANGE PATH !!
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ComplexUpset)
+```
+
+
+### Supplement Result Figure 2. Comparison of DA and C3NA on Significant Taxa
+```{r, fig.width=10}
+Cancer_DA_Data = readRDS(paste0("./SupplementaryPlotData/Cancer_DA_Data.rds"))
+curPlot = upset(
+    data = Cancer_DA_Data,
+    intersect = c('de novo ANCOMBC','DADA2 ANCOMBC',
+                  'de novo MaAsLin2','DADA2 MaAsLin2',
+                  'de novo ALDEx2','DADA2 ALDEx2',
+                  'de novo C3NA','DADA2 C3NA'
+                  ), 
+    base_annotations=list(
+        'Intersection size'=intersection_size(
+            counts=FALSE,
+            mapping=aes(fill=`Taxonomic Level`)
+        ) + 
+        scale_fill_manual(values=c(
+          "Phylum" = "#DBAC01", 
+          "Class" = "#8CD13F",
+          "Order" = "#E09777",
+          "Family" = "#8499BF",
+          "Genus" = "#A840DB",
+          "Species" = "#35BACC"
+        ))
+    ),
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE,
+    stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    ),
+    guides = "over"
+) + ggtitle("Differential Abundance Analyses and C3NA for 'Cancer' Vs. 'Normal' from Baxter et al.")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_2.png"),
+       plot = curPlot,
+       height = 11, width = 15,
+       units = "in", dpi = "retina")
+
+```
+
+### Supplement Result Figure 3. Comparison of DA and C3NA on Significant Taxa
+```{r, fig.width=10}
+Cancer2_DA_Data = readRDS(paste0("./SupplementaryPlotData/Cancer2_DA_Data.rds"))
+curPlot = upset(
+    data = Cancer2_DA_Data,
+    intersect = c('de novo ANCOMBC','DADA2 ANCOMBC',
+                  'de novo MaAsLin2','DADA2 MaAsLin2',
+                  'de novo ALDEx2','DADA2 ALDEx2',
+                  'de novo C3NA','DADA2 C3NA'
+                  ), 
+    base_annotations=list(
+        'Intersection size'=intersection_size(
+            counts=FALSE,
+            mapping=aes(fill=`Taxonomic Level`)
+        ) + 
+        scale_fill_manual(values=c(
+          "Phylum" = "#DBAC01", 
+          "Class" = "#8CD13F",
+          "Order" = "#E09777",
+          "Family" = "#8499BF",
+          "Genus" = "#A840DB",
+          "Species" = "#35BACC"
+        ))
+    ),
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE,
+    stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    ),
+    guides = "over"
+) + ggtitle("Differential Abundance Analyses and C3NA for 'Cancer' Vs. 'Normal' from Zeller et al.")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_3.png"),
+       plot = curPlot,
+       height = 11, width = 15,
+       units = "in", dpi = "retina")
+```
+
+### Supplement Result Figure 4. Comparison of DA and C3NA on Significant Taxa
+```{r, fig.width=10}
+CD_DA_Data = readRDS(paste0("./SupplementaryPlotData/CD_DA_Data.rds"))
+curPlot = upset(
+    data = CD_DA_Data,
+    intersect = c('de novo ANCOMBC','DADA2 ANCOMBC',
+                  'de novo MaAsLin2','DADA2 MaAsLin2',
+                  'de novo ALDEx2','DADA2 ALDEx2',
+                  'de novo C3NA','DADA2 C3NA'
+                  ), 
+    base_annotations=list(
+        'Intersection size'=intersection_size(
+            counts=FALSE,
+            mapping=aes(fill=`Taxonomic Level`)
+        ) + 
+        scale_fill_manual(values=c(
+          "Phylum" = "#DBAC01", 
+          "Class" = "#8CD13F",
+          "Order" = "#E09777",
+          "Family" = "#8499BF",
+          "Genus" = "#A840DB",
+          "Species" = "#35BACC"
+        ))
+    ),
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE,
+    stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    ),
+    guides = "over"
+) + ggtitle("Differential Abundance Analyses and C3NA for 'Crohn's Disease' Vs. 'Normal' from Gevers et al.")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_4.png"),
+       plot = curPlot,
+       height = 11, width = 15,
+       units = "in", dpi = "retina")
+```
+
+### Supplement Result Figure 5. Comparison of DA and C3NA on Significant Taxa
+```{r, fig.width=10}
+IBD_DA_Data = readRDS(paste0("./SupplementaryPlotData/IBD_DA_Data.rds"))
+curPlot = upset(
+    data = IBD_DA_Data,
+    intersect = c('de novo ANCOMBC','DADA2 ANCOMBC',
+                  'de novo MaAsLin2','DADA2 MaAsLin2',
+                  'de novo ALDEx2','DADA2 ALDEx2',
+                  'de novo C3NA','DADA2 C3NA'
+                  ), 
+    base_annotations=list(
+        'Intersection size'=intersection_size(
+            counts=FALSE,
+            mapping=aes(fill=`Taxonomic Level`)
+        ) + 
+        scale_fill_manual(values=c(
+          "Phylum" = "#DBAC01", 
+          "Class" = "#8CD13F",
+          "Order" = "#E09777",
+          "Family" = "#8499BF",
+          "Genus" = "#A840DB",
+          "Species" = "#35BACC"
+        ))
+    ),
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE,
+    stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    ),
+    guides = "over"
+) + ggtitle("Differential Abundance Analyses and C3NA for 'Crohn's Disease' Vs. 'Normal' from IBDMDB")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_5.png"),
+       plot = curPlot,
+       height = 11, width = 15,
+       units = "in", dpi = "retina")
+```
+### Supplement Result Figure 6. Investigate Impact of Filtering 
+```{r}
+taxaInvest = readRDS(paste0("./SupplementaryPlotData/taxaFilterInvestigation.rds"))
+taxaInvest_AllStudy = taxaInvest %>%
+  filter(Disease %in% c("Cancer", "CD")) %>% 
+  mutate(Clustering = ifelse(Clustering == "dada2", "DADA2", Clustering)) %>%
+  mutate(Clustering = ifelse(Clustering == "denovo", "de novo", Clustering)) %>%
+  mutate(
+    Study = case_when(
+    Study =="cancer" ~ "Baxter et al.",
+    Study =="cancer2" ~ "Zeller et al.",
+    Study =="CD" ~ "Gevers et al.",
+    Study =="IBD" ~ "IBDMDB")) %>%
+  mutate(studyName = paste0(Study, " ", Clustering, " ", Disease)) %>%
+  pivot_wider(id_cols = "fullTaxaList", names_from = studyName, values_from = filterdList) %>%
+  replace(is.na(.), value = FALSE) %>%
+  mutate(`Taxonomic Level` = case_when(
+    substring(fullTaxaList, 1, 1) =="p" ~ "Phylum",
+    substring(fullTaxaList, 1, 1) =="c" ~ "Class",
+    substring(fullTaxaList, 1, 1) =="o" ~ "Order",
+    substring(fullTaxaList, 1, 1) =="f" ~ "Family",
+    substring(fullTaxaList, 1, 1) =="g" ~ "Genus", 
+    substring(fullTaxaList, 1, 1) =="s" ~ "Species")
+    )
+curPlot = upset(
+    data = taxaInvest_AllStudy,
+    intersect = c("Baxter et al. DADA2 Cancer", "Baxter et al. de novo Cancer", 
+                  "Zeller et al. DADA2 Cancer", "Zeller et al. de novo Cancer",
+                  "Gevers et al. DADA2 CD", "Gevers et al. de novo CD", 
+                  "IBDMDB DADA2 CD", "IBDMDB de novo CD"), 
+    annotations = list(
+        'Different Taxonomic Level Proportions'=(
+            ggplot(mapping=aes(fill=`Taxonomic Level`))
+            + geom_bar(stat='count', position='fill')
+            + scale_y_continuous(labels=scales::percent_format())
+            + scale_fill_manual(values=c(
+              "Phylum" = "#DBAC01",
+              "Class" = "#8CD13F",
+              "Order" = "#E09777",
+              "Family" = "#8499BF",
+              "Genus" = "#A840DB",
+              "Species" = "#35BACC"
+            ))
+            + ylab('Different Taxonomic Level Proportions')
+        )
+    ), 
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE,
+    stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    ),
+    guides = "over"
+) + ggtitle("")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_6.png"),
+       plot = curPlot,
+       height = 12, width = 25,
+       units = "in", dpi = "retina")
+
+```
+
+### Supplement Result Figure 7. Investigate Impact of Filtered Out Taxa
+```{r}
+taxaInvest_AllStudy_Removed = taxaInvest %>%
+  filter(Disease %in% c("Cancer", "CD") & filterdList == FALSE) %>% 
+  mutate(Clustering = ifelse(Clustering == "dada2", "DADA2", Clustering)) %>%
+  mutate(Clustering = ifelse(Clustering == "denovo", "de novo", Clustering)) %>%
+  mutate(
+  Study = case_when(
+  Study =="cancer" ~ "Baxter et al.",
+  Study =="cancer2" ~ "Zeller et al.",
+  Study =="CD" ~ "Gevers et al.",
+  Study =="IBD" ~ "IBDMDB")) %>%
+  mutate(studyName = paste0(Study, " ", Clustering, " ", Disease)) %>%
+  pivot_wider(id_cols = "fullTaxaList", names_from = studyName, values_from = presence) %>%
+  replace(is.na(.), value = FALSE) %>%
+  mutate(`Taxonomic Level` = case_when(
+    substring(fullTaxaList, 1, 1) =="p" ~ "Phylum",
+    substring(fullTaxaList, 1, 1) =="c" ~ "Class",
+    substring(fullTaxaList, 1, 1) =="o" ~ "Order",
+    substring(fullTaxaList, 1, 1) =="f" ~ "Family",
+    substring(fullTaxaList, 1, 1) =="g" ~ "Genus", 
+    substring(fullTaxaList, 1, 1) =="s" ~ "Species",
+))
+curPlot = upset(
+    data = taxaInvest_AllStudy_Removed,
+ intersect = c("Baxter et al. DADA2 Cancer", "Baxter et al. de novo Cancer", 
+                  "Zeller et al. DADA2 Cancer", "Zeller et al. de novo Cancer",
+                  "Gevers et al. DADA2 CD", "Gevers et al. de novo CD", 
+                  "IBDMDB DADA2 CD", "IBDMDB de novo CD"), 
+    annotations = list(
+        'Different Taxonomic Level Proportions'=(
+            ggplot(mapping=aes(fill=`Taxonomic Level`))
+            + geom_bar(stat='count', position='fill')
+            + scale_y_continuous(labels=scales::percent_format())
+            + scale_fill_manual(values=c(
+              "Phylum" = "#DBAC01",
+              "Class" = "#8CD13F",
+              "Order" = "#E09777",
+              "Family" = "#8499BF",
+              "Genus" = "#A840DB",
+              "Species" = "#35BACC"
+            ))
+            + ylab('Different Taxonomic Level Proportions')
+        )
+    ), 
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE, min_size = 5,
+    stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    ),
+    guides = "over"
+) + ggtitle("")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_7.png"),
+       plot = curPlot,
+       height = 12, width = 25,
+       units = "in", dpi = "retina")
+```
+
+### Supplement Result Figure 8. Shared Intramodular Taxa-Taxa Correlations
+```{r}
+taxaTaxaComboTable = readRDS("./SupplementaryPlotData/taxaTaxaComboTable.rds")
+curPlot = upset(
+    data = taxaTaxaComboTable,
+    intersect = c("Baxter et al. DADA2", "Baxter et al. de novo",
+                  "Zeller et al. DADA2", "Zeller et al. de novo",
+                  "Gevers et al. DADA2", "Gevers et al. de novo",
+                  "IBDMDB DADA2", "IBDMDB de novo"
+                  ), 
+    annotations = list(
+       'Intra-Modular\nTaxa-Taxa\nCorrelation' = 
+          ggplot(mapping=aes(y=Mean))
+            # checkout ggbeeswarm::geom_quasirandom for better results!
+            + geom_violin(alpha = 0.5, na.rm=TRUE)
+            + ggbeeswarm::geom_quasirandom(aes(color="blue"), na.rm=TRUE, alpha = 0.2)
+            + geom_boxplot(width = 0.1, na.rm=TRUE) + guides(color = FALSE)
+    ),
+    min_size = 10, 
+    width_ratio=0.1, wrap=TRUE, sort_sets=FALSE,
+        stripes=upset_stripes(
+        geom=geom_segment(size=10),
+        colors=c('#EDDBCA', "#EDDBCA",
+                 '#DCF0C5', "#DCF0C5",
+                 '#D8EAF0',"#D8EAF0",
+                 "#E9D5ED", "#E9D5ED")
+    )
+) + ggtitle("")
+
+ggsave(file = paste0("./renderedPlots/SR_Figure_8.png"),
+       plot = curPlot,
+       height = 12, width = 25,
+       units = "in", dpi = "retina")
+```
+
+### Supplement Result Figure 9
+```{r}
+clusterInfo = readRDS(paste0("./SupplementaryPlotData/SRF_9A.rds"))
+clusterInfoPlot = 
+  ggplot(clusterInfo, aes(x = index, y = Silouette, color = termModule)) +
+    geom_line() + geom_point() +  
+    facet_grid(. ~ Category) + theme_bw() + 
+    labs(x = "Number of Clusters from Consensus Matrix", 
+         y = "Average Silouette Width", 
+         color = "Terminating Minimal Number\n of Taxa per Module") + 
+    theme(legend.position = "top") + 
+    guides(color = guide_legend(nrow = 2, byrow = TRUE))
+ggsave(file = paste0("./renderedPlots/SR_Figure_9A.png"),
+       plot = clusterInfoPlot,
+       height = 8, width = 14,
+       units = "in", dpi = "retina")
+```
+
+```{r}
+sparccTableV2 = readRDS(paste0("./SupplementaryPlotData/SRF_9B.rds"))
+sparccPlot = 
+  ggplot() +
+    geom_tile(data = sparccTableV2, aes(x = Var1, y = Var2, fill = Freq), color = "black") +
+    geom_text(data = sparccTableV2, aes(x = Var1, y = Var2, label = Freq)) +
+    geom_text(data = sparccTableV2, aes(x = Var1, y = Var2, label = text)) +
+    guides(fill = guide_colourbar(barwidth = 0.5,
+                                  barheight = 20)) + 
+    scale_fill_gradientn(colors = hcl.colors(20, "RdYlGn")) + 
+    labs(x = "Minimal # Taxa per Module", y = "Optimal Number of Clusters", 
+         caption = "The number reflects the total number of intra-modular correlations")
+ggsave(file = paste0("./renderedPlots/SR_Figure_9B.png"),
+       plot = sparccPlot,
+       height = 8, width = 12,
+       units = "in", dpi = "retina")
+```
+
+### Supplement Result Figure 10
+```{r}
+
+```
+
+
