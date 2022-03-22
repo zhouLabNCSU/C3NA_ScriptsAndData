@@ -288,7 +288,7 @@ arcPlot =
   geom_node_point(aes(color = colors_Disease), size=8) +
   scale_x_discrete(limits = nodesCancer$TaxaName,
                    labels = nodesCancer$TaxaName) +
-  theme_bw() + labs(x = NULL, y = "", title = "Disease-Only Intra-Modular Correlations") + ylim(0, 5) + 
+  theme_bw() + labs(x = NULL, y = "", title = "Disease-Only Intra-Modular Correlations") + ylim(0, 7) + 
   theme(
     legend.position="none",
     # plot.margin=unit(rep(2,4), "cm")
