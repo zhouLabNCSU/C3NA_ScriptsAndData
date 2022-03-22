@@ -84,7 +84,7 @@ moduleEvals(C3NAObj = IBDMDBDeNovononIBD)
 ### 2.1 Main Figure 2A
 Duplicated legend is removed mnually and the x axis label were manually adjust to top of the plot. 
 ```{r}
-githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainF1A.rdata")
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainF2A.rdata")
 load(url(githubURL, method="libcurl"))
 png(filename = paste0("./renderedPlots/MainFig2A.png"),
     width = 13, height = 11, res = 300, units = "in")
@@ -102,9 +102,10 @@ grid.text("Baxter et al. with DADA2 ASVs Assignment Method", x=-0.02, rot=90, gp
 dev.off()
 ```
 
-### 2.1 Main Figure 2B
+### 2.2 Main Figure 2B
+Duplicated legend is removed mnually and the x axis label were manually adjust to top of the plot. 
 ```{r}
-githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainF1B.rdata")
+githubURL <- ("https://github.com/zhouLabNCSU/C3NA_ScriptsAndData/raw/main/SupplementaryPlotData/MainF2B.rdata")
 load(url(githubURL, method="libcurl"))
 png(filename = paste0("./renderedPlots/MainFig2B.png"),
     width = 13, height = 11, res = 300, units = "in")
@@ -121,6 +122,21 @@ grid.text("Gevers et al. with de novo OTUs Assignment Method", y=-0.02, gp=gpar(
 grid.text("Gevers et al. with DADA2 ASVs Assignment Method", x=-0.02, rot=90, gp=gpar(fontsize=12))
 dev.off()
 ```
+
+### 2.3 Main Figure 2C
+The plot loads the following Baxter et al. and select g_Bacteroides in the 'Taxa Selector'. For better visualization, the edge label is adjusted to 1 and the node label was adjusted to 12. 
+```{r}
+
+```
+
+### 2.4 Main Figure 2D
+The plot loads the following Baxter et al. and select g_Bacteroides in the 'Taxa Selector'. For better visualization, the edge label is adjusted to 1 and the node label was adjusted to 12. 
+```{r}
+
+```
+
+
+
 
 
 
